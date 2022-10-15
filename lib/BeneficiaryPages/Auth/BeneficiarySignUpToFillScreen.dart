@@ -2,24 +2,26 @@ import 'dart:convert';
 
 import 'package:checkbox_formfield/checkbox_formfield.dart';
 import 'package:flutter/material.dart';
-import 'package:rise_up/DonorPages/Auth/DonorCompleteProfile.dart';
+import 'package:rise_up/BeneficiaryPages/Auth/BeneficiaryCompleteProfile.dart';
 import 'package:rise_up/lang/locale_keys.g.dart';
 import '../../Colors.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:http/http.dart' as http;
 
-import '../../MerchantPages/Auth/MerchantCompleteProfile.dart';
-
-class SignUpToFillScreen extends StatefulWidget {
-  String category;
-
-  SignUpToFillScreen({super.key, required this.category});
+class BeneficiarySignUpToFillScreen extends StatefulWidget {
+  const BeneficiarySignUpToFillScreen({Key? key}) : super(key: key);
   @override
   State<StatefulWidget> createState() => StartState();
 }
 
-class StartState extends State<SignUpToFillScreen> {
-  String username = "", txtEmail = "", password = "", confirmPassword = "";
+class StartState extends State<BeneficiarySignUpToFillScreen> {
+  String username = "",
+      firstName = "",
+      lastName = "",
+      nickName = "",
+      txtEmail = "",
+      password = "",
+      confirmPassword = "";
   bool firstValue = false;
   bool secondValue = false;
 
@@ -156,6 +158,145 @@ class StartState extends State<SignUpToFillScreen> {
                                   borderSide: BorderSide(
                                     color: greyInputColor,
                                   )),
+                            ),
+                          ),
+                        ),
+                        //Firstname
+                        Align(
+                          alignment: Alignment.topLeft,
+                          child: Text(
+                            LocaleKeys.BeneficiarySignUpScreen_lblFname.tr(),
+                            style: const TextStyle(
+                              fontFamily: "Lucida Sans",
+                              color: blueTextColor,
+                              fontSize: 15,
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.only(bottom: 8.0),
+                          child: TextFormField(
+                            validator: (value) {
+                              if (value!.isEmpty) {
+                                return "Must not be empty";
+                              } else {
+                                return null;
+                              }
+                            },
+                            onChanged: (value) {
+                              setState(() {
+                                firstName = value;
+                              });
+                            },
+                            decoration: const InputDecoration(
+                              fillColor: greyInputColor,
+                              filled: true,
+                              labelStyle: TextStyle(
+                                  fontFamily: "Open Sans",
+                                  color: greyHintColor),
+                              labelText: 'Ex: سمير',
+                              enabledBorder: OutlineInputBorder(
+                                  borderRadius:
+                                      BorderRadius.all(Radius.circular(20)),
+                                  borderSide: BorderSide(
+                                    color: greyInputColor,
+                                  )),
+                            ),
+                          ),
+                        ),
+                        //lastname
+                        Align(
+                          alignment: Alignment.topLeft,
+                          child: Text(
+                            LocaleKeys.BeneficiarySignUpScreen_lblLname.tr(),
+                            style: const TextStyle(
+                              fontFamily: "Lucida Sans",
+                              color: blueTextColor,
+                              fontSize: 15,
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.only(bottom: 8.0),
+                          child: TextFormField(
+                            validator: (value) {
+                              if (value!.isEmpty) {
+                                return "Must not be empty";
+                              } else {
+                                return null;
+                              }
+                            },
+                            onChanged: (value) {
+                              setState(() {
+                                lastName = value;
+                              });
+                            },
+                            decoration: const InputDecoration(
+                              fillColor: greyInputColor,
+                              filled: true,
+                              labelStyle: TextStyle(
+                                  fontFamily: "Open Sans",
+                                  color: greyHintColor),
+                              labelText: 'Ex: الحج',
+                              enabledBorder: OutlineInputBorder(
+                                  borderRadius:
+                                      BorderRadius.all(Radius.circular(20)),
+                                  borderSide: BorderSide(
+                                    color: greyInputColor,
+                                  )),
+                            ),
+                          ),
+                        ),
+                        //nick name
+                        Align(
+                          alignment: Alignment.topLeft,
+                          child: Text(
+                            LocaleKeys.BeneficiarySignUpScreen_lblNickName.tr(),
+                            style: const TextStyle(
+                              fontFamily: "Lucida Sans",
+                              color: blueTextColor,
+                              fontSize: 15,
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.only(bottom: 8.0),
+                          child: TextFormField(
+                            onChanged: (value) {
+                              setState(() {
+                                nickName = value;
+                              });
+                            },
+                            decoration: const InputDecoration(
+                              fillColor: greyInputColor,
+                              filled: true,
+                              labelStyle: TextStyle(fontFamily: "Open Sans"),
+                              labelText: 'Ex: Nick',
+                              enabledBorder: OutlineInputBorder(
+                                  borderRadius:
+                                      BorderRadius.all(Radius.circular(20)),
+                                  borderSide: BorderSide(
+                                    color: greyInputColor,
+                                  )),
+                            ),
+                          ),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.fromLTRB(0, 5, 0, 20),
+                          child: Align(
+                            alignment: Alignment.topLeft,
+                            child: Text(
+                              LocaleKeys.BeneficiarySignUpScreen_lblNickHint
+                                  .tr(),
+                              style: const TextStyle(
+                                fontFamily: "Open Sans",
+                                color: greyTextColor,
+                                fontSize: 15,
+                                fontWeight: FontWeight.w400,
+                              ),
                             ),
                           ),
                         ),
@@ -359,7 +500,7 @@ class StartState extends State<SignUpToFillScreen> {
                             checkColor: whiteColor,
                             // color of tick Mark
                             activeColor: redColor,
-                            onChanged: (bool value) {
+                            onChanged: (value) {
                               setState(() {
                                 firstValue = value;
                               });
@@ -401,7 +542,7 @@ class StartState extends State<SignUpToFillScreen> {
                                 return 'Must be checked!';
                               }
                             },
-                            onChanged: (bool value) {
+                            onChanged: (value) {
                               setState(() {
                                 secondValue = value;
                               });
@@ -433,229 +574,28 @@ class StartState extends State<SignUpToFillScreen> {
                 onPressed: () async {
                   //if the form is validated send api
                   if (formKey.currentState!.validate()) {
-                    bool chk = true;
-                    if (widget.category == "Merchant") {
-                      print(widget.category);
-                      Map response = await MerchantRegister(
-                          username, txtEmail, password, chk);
-                      if (response['success'] == true) {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) =>
-                                  const MerchantCompleteProfile()),
-                        );
-                      } else {
-                        showDialog(
-                            context: context,
-                            builder: (context) {
-                              return Dialog(
-                                shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(20)),
-                                elevation: 16,
-                                child: SizedBox(
-                                  height:
-                                      MediaQuery.of(context).size.height * 0.5,
-                                  width:
-                                      MediaQuery.of(context).size.width * 0.9,
-                                  child: Column(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceBetween,
-                                    children: <Widget>[
-                                      const SizedBox(height: 20),
-                                      Container(
-                                        height:
-                                            MediaQuery.of(context).size.width *
-                                                0.3,
-                                        width:
-                                            MediaQuery.of(context).size.width *
-                                                0.3,
-                                        decoration: const BoxDecoration(
-                                            image: DecorationImage(
-                                                image: AssetImage(
-                                                    "Assets/Images/ErrorIcon.png"),
-                                                fit: BoxFit.fill)),
-                                      ),
-                                      const Center(
-                                          child: Text('Sorry!',
-                                              style: TextStyle(
-                                                fontFamily: "Lucida Sans",
-                                                color: navyColor,
-                                                fontSize: 22,
-                                                fontWeight: FontWeight.w600,
-                                              ))),
-                                      const Center(
-                                          child: Text(
-                                              'An active application exists. You are not eligible to apply again at this moment',
-                                              textAlign: TextAlign.center,
-                                              style: TextStyle(
-                                                fontFamily: "Open Sans",
-                                                color: greyTextColor,
-                                                fontSize: 16,
-                                                fontWeight: FontWeight.w400,
-                                              ))),
-                                      Padding(
-                                        padding: EdgeInsets.only(
-                                            bottom: MediaQuery.of(context)
-                                                    .size
-                                                    .height *
-                                                0.04),
-                                        child: Center(
-                                            child: SizedBox(
-                                          width: MediaQuery.of(context)
-                                                  .size
-                                                  .width *
-                                              0.7,
-                                          child: TextButton(
-                                            style: ButtonStyle(
-                                                backgroundColor:
-                                                    MaterialStateProperty.all<
-                                                        Color>(navyColor),
-                                                shape: MaterialStateProperty.all<
-                                                        RoundedRectangleBorder>(
-                                                    RoundedRectangleBorder(
-                                                  borderRadius:
-                                                      BorderRadius.circular(
-                                                          15.0),
-                                                ))),
-                                            onPressed: () {
-                                              // Navigator.push(
-                                              // context,
-                                              //MaterialPageRoute(
-                                              //builder: (context) =>  const LoginScreen()),
-                                              //);
-                                            },
-                                            child: const Text(
-                                              "LEARN MORE",
-                                              style: TextStyle(
-                                                color: whiteColor,
-                                                fontFamily: "Lucida Sans",
-                                                fontWeight: FontWeight.w600,
-                                                fontSize: 18,
-                                              ),
-                                            ),
-                                          ),
-                                        )),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              );
-                            });
-                      }
-                    } else if (widget.category == "Donor") {
-                      bool chk1 = true;
-                      bool chk2 = true;
-                      print(widget.category);
-                      Map response = await DonorRegister(
-                          username, txtEmail, password, chk1, chk2);
-                      if (response['success'] == true) {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) =>
-                                  const DonorCompleteProfile()),
-                        );
-                      } else {
-                        showDialog(
-                            context: context,
-                            builder: (context) {
-                              return Dialog(
-                                shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(20)),
-                                elevation: 16,
-                                child: SizedBox(
-                                  height:
-                                      MediaQuery.of(context).size.height * 0.5,
-                                  width:
-                                      MediaQuery.of(context).size.width * 0.9,
-                                  child: Column(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceBetween,
-                                    children: <Widget>[
-                                      const SizedBox(height: 20),
-                                      Container(
-                                        height:
-                                            MediaQuery.of(context).size.width *
-                                                0.3,
-                                        width:
-                                            MediaQuery.of(context).size.width *
-                                                0.3,
-                                        decoration: const BoxDecoration(
-                                            image: DecorationImage(
-                                                image: AssetImage(
-                                                    "Assets/Images/ErrorIcon.png"),
-                                                fit: BoxFit.fill)),
-                                      ),
-                                      const Center(
-                                          child: Text('Sorry!',
-                                              style: TextStyle(
-                                                fontFamily: "Lucida Sans",
-                                                color: navyColor,
-                                                fontSize: 22,
-                                                fontWeight: FontWeight.w600,
-                                              ))),
-                                      const Center(
-                                          child: Text(
-                                              'An active application exists. You are not eligible to apply again at this moment',
-                                              textAlign: TextAlign.center,
-                                              style: TextStyle(
-                                                fontFamily: "Open Sans",
-                                                color: greyTextColor,
-                                                fontSize: 16,
-                                                fontWeight: FontWeight.w400,
-                                              ))),
-                                      Padding(
-                                        padding: EdgeInsets.only(
-                                            bottom: MediaQuery.of(context)
-                                                    .size
-                                                    .height *
-                                                0.04),
-                                        child: Center(
-                                            child: SizedBox(
-                                          width: MediaQuery.of(context)
-                                                  .size
-                                                  .width *
-                                              0.7,
-                                          child: TextButton(
-                                            style: ButtonStyle(
-                                                backgroundColor:
-                                                    MaterialStateProperty.all<
-                                                        Color>(navyColor),
-                                                shape: MaterialStateProperty.all<
-                                                        RoundedRectangleBorder>(
-                                                    RoundedRectangleBorder(
-                                                  borderRadius:
-                                                      BorderRadius.circular(
-                                                          15.0),
-                                                ))),
-                                            onPressed: () {
-                                              // Navigator.push(
-                                              // context,
-                                              //MaterialPageRoute(
-                                              //builder: (context) =>  const LoginScreen()),
-                                              //);
-                                            },
-                                            child: const Text(
-                                              "LEARN MORE",
-                                              style: TextStyle(
-                                                color: whiteColor,
-                                                fontFamily: "Lucida Sans",
-                                                fontWeight: FontWeight.w600,
-                                                fontSize: 18,
-                                              ),
-                                            ),
-                                          ),
-                                        )),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              );
-                            });
-                      }
-                    }
-                  } //else if not validate
+                    bool chk2 = true;
+                    bool chk1 = true;
+                    Map response = await BeneficiaryRegister(
+                        username,
+                        firstName,
+                        lastName,
+                        nickName,
+                        txtEmail,
+                        password,
+                        chk1,
+                        chk2);
+                    if (response['success'] == true) {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) =>
+                                const BeneficiaryCompleteProfile()),
+                      );
+                    } else
+                      print("user already exist");
+                  }
+                  //else if not validated
                   else {
                     print("UnSuccessfull");
                   }
@@ -678,41 +618,22 @@ class StartState extends State<SignUpToFillScreen> {
   }
 }
 
-Future<Map> MerchantRegister(
-    String userName, String email, String pass, bool chk) async {
-  var body = jsonEncode({
-    'email': email,
-    'userName': userName,
-    'password': pass,
-    'becontacted': chk,
-  });
-  print("begin");
-  print("the username is $userName");
-  var response = await http.post(
-      Uri.parse('https://rise.anzimaty.com/api/Merchant/Register'),
-      body: body,
-      headers: {
-        "Accept": "application/json",
-        "content-type": "application/json"
-      });
-  Map result = json.decode(response.body);
-  print(response.body);
-  return result;
-}
-
-Future<Map> DonorRegister(
-    String userName, String email, String pass, bool chk1, chk2) async {
+Future<Map> BeneficiaryRegister(String userName, String fName, String lName,
+    String nickName, String email, String pass, bool chk1, bool chk2) async {
   var body = jsonEncode({
     'email': email,
     'username': userName,
-    'password': pass,
     'showName': chk1,
-    'beAnonymous': chk2,
+    'nickName': nickName,
+    'firstName': fName,
+    'lastName': lName,
+    'password': pass,
+    'becontacted': chk2,
   });
   print("begin");
   print("the username is $userName");
   var response = await http.post(
-      Uri.parse('https://rise.anzimaty.com/api/Donor/Register'),
+      Uri.parse('https://rise.anzimaty.com/api/Beneficiary/Register'),
       body: body,
       headers: {
         "Accept": "application/json",
