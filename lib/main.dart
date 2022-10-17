@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:rise_up/CommonPages/Auth/SplashScreen.dart';
 import 'package:rise_up/CommonPages/bottom_nav.dart';
 import 'package:rise_up/lang/codegen_loader.g.dart';
 import 'package:sizer/sizer.dart';
@@ -30,7 +31,7 @@ class MyApp extends StatelessWidget {
           localizationsDelegates: context.localizationDelegates,
           supportedLocales: context.supportedLocales,
           locale: context.locale,
-          home: const BottomNav(),
+          home: const SplashScreen(),
         );
       },
     );

@@ -1,3 +1,5 @@
+// ignore_for_file: prefer_typing_uninitialized_variables, prefer_interpolation_to_compose_strings
+
 import 'dart:convert';
 import 'dart:io'; // for File
 import 'package:checkbox_formfield/checkbox_list_tile_formfield.dart';
@@ -11,9 +13,12 @@ import '../../BeneficiaryPages/Auth/AddresMapScreen.dart';
 import '../../Colors.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:http/http.dart' as http;
+import '../../Function.dart';
 
 class MerchantCompleteProfile extends StatefulWidget {
-  const MerchantCompleteProfile({Key? key}) : super(key: key);
+  var tokenId;
+  var tokenbody;
+  MerchantCompleteProfile({super.key, required this.tokenId, this.tokenbody});
   @override
   State<StatefulWidget> createState() => StartState();
 }
@@ -26,13 +31,7 @@ class StartState extends State<MerchantCompleteProfile> {
   }
 
   bool chkvalue = false;
-  String username = "",
-      firstName = "",
-      lastName = "",
-      nickName = "",
-      txtEmail = "",
-      password = "",
-      confirmPassword = "";
+
   String storeName = "",
       personName = "",
       contactNb = "",
@@ -824,13 +823,11 @@ class StartState extends State<MerchantCompleteProfile> {
                 onPressed: () async {
                   //if the form is validated send api
                   if (formKey.currentState!.validate()) {
-                    /**bool chk2=true;
-                            bool chk1=true;
-                            Map response= await BeneficiaryRegister(username,firstName,lastName,nickName,txtEmail,password,chk1,chk2);
+                    /**  Map response= await MerchantCompleteProfile(widget.tokenId,typeDropdownvalue,storeName,personName,storenb,contactNb,long,lag,streetAddress,registrationNb,tradeNb,tradeimage,imagefront,imageback);
                             if(response['success']==true){
                             print("succes");
                             }
-                            else print("user already exist");**/
+                            else print("failed");**/
                   }
                   //else if not validated
                   else {
@@ -854,10 +851,8 @@ class StartState extends State<MerchantCompleteProfile> {
     );
   }
 
-//correct it
   Future getAllTypes() async {
     var baseUrl = "https://rise.anzimaty.com/api/General/GetAllMariedStatus";
-
     http.Response response = await http.post(Uri.parse(baseUrl));
     print("begin");
     print(response.body);
@@ -865,6 +860,55 @@ class StartState extends State<MerchantCompleteProfile> {
     setState(() {
       typeItemList = jsonData["data"];
     });
+  }
+
+//MerchantCompleteProfileApi
+  Future<Map> MerchantCompleteProfile(
+    String id,
+    int identityTypeId,
+    String storename,
+    String personname,
+    String storephone,
+    String personphone,
+    String long,
+    String lag,
+    String street,
+    String registrationnb,
+    String tradenb,
+    String tradeimage,
+    String imagefront,
+    String imageback,
+    String registrationimage, //to be added in swagger
+  ) async {
+    var body = jsonEncode({
+      'id': id,
+      'identityTypeId': identityTypeId,
+      'storeName': storename,
+      'personName': personname,
+      'storePhoneNb': storephone,
+      'personPhoneNb': personphone,
+      'long': long,
+      'lag': lag,
+      'streetAddress': street,
+      'registrationNb': registrationnb,
+      'tradeMarkNb': tradenb,
+      'idTradeLisence': tradeimage,
+      'personnalId': imagefront,
+      'personnalIdBack': imageback,
+    });
+    print("begin MerchantCOmpleteProfile");
+    print("the username is $id");
+    var response = await http.post(
+        Uri.parse('https://rise.anzimaty.com/api/Merchant/Profile'),
+        body: body,
+        headers: {
+          "Accept": "application/json",
+          "content-type": "application/json",
+          "Authorization": "Bearer " + widget.tokenbody
+        });
+    Map result = json.decode(response.body);
+    print(response.body);
+    return result;
   }
 
 // Implementing the image picker

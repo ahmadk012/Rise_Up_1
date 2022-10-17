@@ -1,3 +1,5 @@
+// ignore_for_file: prefer_interpolation_to_compose_strings
+
 import 'dart:convert';
 import 'dart:core';
 import 'package:flutter/cupertino.dart';
@@ -10,7 +12,11 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:http/http.dart' as http;
 
 class DonorCompleteProfile extends StatefulWidget {
-  const DonorCompleteProfile({Key? key}) : super(key: key);
+  // ignore: prefer_typing_uninitialized_variables
+  var tokenId;
+  var tokenbody;
+  DonorCompleteProfile({super.key, required this.tokenId, this.tokenbody});
+
   @override
   State<StatefulWidget> createState() => StartState();
 }
@@ -32,14 +38,16 @@ class StartState extends State<DonorCompleteProfile> {
       txtEmail = "",
       password = "",
       confirmPassword = "";
+
+  DateTime DOB = "" as DateTime;
   List countryItemList = [];
-  var dropdownvalue;
+  var countrydropdownvalue;
   List genderItemList = [];
   var genderDropdownvalue;
   List nationalityItemList = [];
   var nationalityDropdownvalue;
   List interestItemList = [];
-  var iterestDropdownvalue;
+  var interestDropdownvalue;
 
   dynamic _pickImageError;
   final GlobalKey<FormState> formKey = GlobalKey<FormState>();
@@ -306,7 +314,7 @@ class StartState extends State<DonorCompleteProfile> {
                                       ),
                                       readOnly: true,
                                       validator: (value) {
-                                        if (value == null) {
+                                        if (value!.isEmpty) {
                                           return "Must Choose Date";
                                         } else {
                                           return null;
@@ -322,6 +330,7 @@ class StartState extends State<DonorCompleteProfile> {
                                             lastDate: DateTime(2100));
 
                                         if (pickedDate != null) {
+                                          DOB = pickedDate;
                                           print(
                                               pickedDate); //pickedDate output format => 2021-03-10 00:00:00.000
                                           String formattedDate =
@@ -378,10 +387,10 @@ class StartState extends State<DonorCompleteProfile> {
                                     color: greyInputColor,
                                   )),
                             ),
-                            value: dropdownvalue,
+                            value: countrydropdownvalue,
                             onChanged: (newVal) {
                               setState(() {
-                                dropdownvalue = newVal;
+                                countrydropdownvalue = newVal;
                               });
                             },
                             validator: (value) {
@@ -396,11 +405,11 @@ class StartState extends State<DonorCompleteProfile> {
                         //nationality and iterest
                         Row(
                           children: [
+                            //Nationality Origin
                             Flexible(
                                 flex: 1,
                                 child: Column(
                                   children: [
-                                    //Nationality Origin
                                     Align(
                                       alignment: Alignment.topLeft,
                                       child: Text(
@@ -455,12 +464,11 @@ class StartState extends State<DonorCompleteProfile> {
                             const SizedBox(
                               width: 10,
                             ),
-                            //Date of Birth
+                            //Interest Origin
                             Flexible(
                                 flex: 1,
                                 child: Column(
                                   children: [
-                                    //Interest Origin
                                     Align(
                                       alignment: Alignment.topLeft,
                                       child: Text(
@@ -503,10 +511,10 @@ class StartState extends State<DonorCompleteProfile> {
                                               color: greyInputColor,
                                             )),
                                       ),
-                                      value: iterestDropdownvalue,
+                                      value: interestDropdownvalue,
                                       onChanged: (newVal) {
                                         setState(() {
-                                          iterestDropdownvalue = newVal;
+                                          interestDropdownvalue = newVal;
                                         });
                                       },
                                     ),
@@ -539,13 +547,20 @@ class StartState extends State<DonorCompleteProfile> {
                 onPressed: () async {
                   //if the form is validated send api
                   if (formKey.currentState!.validate()) {
-                    /**bool chk2=true;
-                            bool chk1=true;
-                            Map response= await BeneficiaryRegister(username,firstName,lastName,nickName,txtEmail,password,chk1,chk2);
-                            if(response['success']==true){
-                            print("succes");
-                            }
-                            else print("user already exist");**/
+                    Map response = await DonorCompleteProfile(
+                        widget.tokenId,
+                        nickName,
+                        firstName,
+                        lastName,
+                        genderDropdownvalue,
+                        DOB,
+                        countrydropdownvalue,
+                        nationalityDropdownvalue,
+                        interestDropdownvalue);
+                    if (response['success'] == true) {
+                      print("succes");
+                    } else
+                      print("user already exist");
                   }
                   //else if not validated
                   else {
@@ -569,64 +584,85 @@ class StartState extends State<DonorCompleteProfile> {
     );
   }
 
-//correct it
+//DonorCompleteProfileApi
+  Future<Map> DonorCompleteProfile(
+      String id,
+      String nickname,
+      String fname,
+      String lname,
+      int gender,
+      DateTime birthdate,
+      int country,
+      int nationality,
+      int interest) async {
+    var body = jsonEncode({
+      'id': id,
+      'nickName': nickname,
+      'firstName': fname,
+      'lastName': lname,
+      'genderId': gender,
+      'birthDate': birthdate,
+      'countryId': country,
+      'nationalityId': nationality,
+      'donationOfIntrestId': interest
+    });
+    print("begin DonorCompleteProfileApi");
+    print("the username is $id");
+    var response = await http.post(
+        Uri.parse('https://rise.anzimaty.com/api/Donor/Profile'),
+        body: body,
+        headers: {
+          "Accept": "application/json",
+          "content-type": "application/json",
+          "Authorization": "Bearer " + widget.tokenbody
+        });
+    Map result = json.decode(response.body);
+    print(response.body);
+    return result;
+  }
+
   Future getAllCountries() async {
     var baseUrl = "https://rise.anzimaty.com/api/General/GetAllCountry";
-
     http.Response response = await http.post(Uri.parse(baseUrl));
-    print("begin");
+    print("begin Countries");
     print(response.body);
     var jsonData = json.decode(response.body);
     setState(() {
-      countryItemList = jsonData;
+      countryItemList = jsonData["data"];
     });
   }
 
-//correct it
   Future getAllGenders() async {
     var baseUrl = "https://rise.anzimaty.com/api/General/GetAllGender";
-
     http.Response response = await http.post(Uri.parse(baseUrl));
-    print("begin");
-    if (response.statusCode == 200) {
-      print(response.body);
-      var jsonData = json.decode(response.body);
-      setState(() {
-        genderItemList = jsonData;
-      });
-    } else
-      print(response.statusCode);
+    print("begin Gender");
+    print(response.body);
+    var jsonData = json.decode(response.body);
+    setState(() {
+      countryItemList = jsonData["data"];
+    });
   }
 
-  //correct it
   Future getAllNationality() async {
     var baseUrl = "https://rise.anzimaty.com/api/General/GetAllNationality";
-
     http.Response response = await http.post(Uri.parse(baseUrl));
-    print("begin");
-    if (response.statusCode == 200) {
-      print(response.body);
-      var jsonData = json.decode(response.body);
-      setState(() {
-        nationalityItemList = jsonData;
-      });
-    } else
-      print(response.statusCode);
+    print("begin Nationality");
+    print(response.body);
+    var jsonData = json.decode(response.body);
+    setState(() {
+      countryItemList = jsonData["data"];
+    });
   }
 
   Future getAllInterest() async {
     var baseUrl =
         "https://rise.anzimaty.com/api/General/GetAllDontationOfInterestType";
-
     http.Response response = await http.post(Uri.parse(baseUrl));
-    print("begin");
-    if (response.statusCode == 200) {
-      print(response.body);
-      var jsonData = json.decode(response.body);
-      setState(() {
-        interestItemList = jsonData;
-      });
-    } else
-      print(response.statusCode);
+    print("begin interest");
+    print(response.body);
+    var jsonData = json.decode(response.body);
+    setState(() {
+      countryItemList = jsonData["data"];
+    });
   }
 }

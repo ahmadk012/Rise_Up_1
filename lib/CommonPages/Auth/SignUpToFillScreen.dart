@@ -9,6 +9,8 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:http/http.dart' as http;
 
 import '../../MerchantPages/Auth/MerchantCompleteProfile.dart';
+import '../../Token.dart';
+import '../../Response200.dart';
 
 class SignUpToFillScreen extends StatefulWidget {
   String category;
@@ -134,6 +136,8 @@ class StartState extends State<SignUpToFillScreen> {
                             validator: (value) {
                               if (value!.isEmpty) {
                                 return "Must not be empty";
+                              } else if (value.contains(' ')) {
+                                return 'Username cannot contain spaces';
                               } else {
                                 return null;
                               }
@@ -438,12 +442,15 @@ class StartState extends State<SignUpToFillScreen> {
                       print(widget.category);
                       Map response = await MerchantRegister(
                           username, txtEmail, password, chk);
+                      var tokenresponse = response["token"];
                       if (response['success'] == true) {
+                        // ignore: use_build_context_synchronously
                         Navigator.push(
                           context,
                           MaterialPageRoute(
-                              builder: (context) =>
-                                  const MerchantCompleteProfile()),
+                              builder: (context) => MerchantCompleteProfile(
+                                  tokenId: merchanttokenid,
+                                  tokenbody: tokenresponse)),
                         );
                       } else {
                         showDialog(
@@ -549,12 +556,15 @@ class StartState extends State<SignUpToFillScreen> {
                       print(widget.category);
                       Map response = await DonorRegister(
                           username, txtEmail, password, chk1, chk2);
+                      var tokenresponse = response["token"];
                       if (response['success'] == true) {
+                        // ignore: use_build_context_synchronously
                         Navigator.push(
                           context,
                           MaterialPageRoute(
-                              builder: (context) =>
-                                  const DonorCompleteProfile()),
+                              builder: (context) => DonorCompleteProfile(
+                                  tokenId: donortokenid,
+                                  tokenbody: tokenresponse)),
                         );
                       } else {
                         showDialog(
@@ -678,6 +688,7 @@ class StartState extends State<SignUpToFillScreen> {
   }
 }
 
+var merchanttokenid;
 Future<Map> MerchantRegister(
     String userName, String email, String pass, bool chk) async {
   var body = jsonEncode({
@@ -695,11 +706,23 @@ Future<Map> MerchantRegister(
         "Accept": "application/json",
         "content-type": "application/json"
       });
+  Response200 response200 = response200FromMap(response.body);
+  //handle api response
+  if (response.statusCode == 200) {
+    print('response DonorRegister 200');
+    //decode response body
+    Response200 response200 = response200FromMap(response.body);
+    var tokenMap = Token().parseJwt(response200.token);
+    print('Token Map : $tokenMap');
+    merchanttokenid = tokenMap['Id'];
+    print(donortokenid);
+  }
   Map result = json.decode(response.body);
   print(response.body);
   return result;
 }
 
+var donortokenid;
 Future<Map> DonorRegister(
     String userName, String email, String pass, bool chk1, chk2) async {
   var body = jsonEncode({
@@ -718,6 +741,17 @@ Future<Map> DonorRegister(
         "Accept": "application/json",
         "content-type": "application/json"
       });
+  Response200 response200 = response200FromMap(response.body);
+  //handle api response
+  if (response.statusCode == 200) {
+    print('response DonorRegister 200');
+    //decode response body
+    Response200 response200 = response200FromMap(response.body);
+    var tokenMap = Token().parseJwt(response200.token);
+    print('Token Map : $tokenMap');
+    donortokenid = tokenMap['Id'];
+    print(donortokenid);
+  }
   Map result = json.decode(response.body);
   print(response.body);
   return result;

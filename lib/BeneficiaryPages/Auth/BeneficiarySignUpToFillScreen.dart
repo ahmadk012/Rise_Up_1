@@ -136,6 +136,8 @@ class StartState extends State<BeneficiarySignUpToFillScreen> {
                             validator: (value) {
                               if (value!.isEmpty) {
                                 return "Must not be empty";
+                              } else if (value.contains(' ')) {
+                                return 'Username cannot contains spaces';
                               } else {
                                 return null;
                               }
